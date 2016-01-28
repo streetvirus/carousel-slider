@@ -65,10 +65,11 @@ class Carousel_Slider_Block_Slider extends Mage_Core_Block_Template
 		$storeid = Mage::app()->getStore()->getId();
 		$collection = Mage::getModel('slider/slider')->getCollection()
 						->addFieldToSelect( array( 'slider_id', 'slider_width', 'slider_height', 'slider_duration' ) )
-						->join('slider/slider_items','`slider/slider_items`.slideritem_slider = main_table.slider_id')
 						->addFieldToFilter('slider_id',$slideridentifier )
 						->addFieldToFilter('main_table.status', array('eq'=>1) )
-						->addFieldToFilter('`slider/slider_items`.store_id', array(array('like'=>'%' . $storeid . '%'), array('like'=>'%0%')) );
+						->join('slider/slider_items','`slider/slider_items`.slideritem_slider = main_table.slider_id');
+		$collection->addFilterToMap('store_id', '`slider/slider_items`.store_id');
+		$collection->addFieldToFilter('store_id', array(array('like'=>'%' . $storeid . '%'), array('like'=>'%0%')) );
 		$collection->getSelect()->order('slider_sort ASC');
 		$sliders = $collection->getData();
 		$output = '';
